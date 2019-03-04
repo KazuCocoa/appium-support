@@ -11,6 +11,9 @@ addons:
       - llvm-toolchain-trusty-5.0
     packages:
       - clang-5.0
+cache:
+  directories:
+    - "$(npm root -g)"
 env:
   global:
     - CXX=clang++-5.0
@@ -18,15 +21,13 @@ env:
     - _FORCE_LOGS=1
 install:
   - npm install
-  - |
-    printf "while [ true ]; do\nsleep 30\necho 'Building OpenCV'\ndone" > ping.sh
-    bash ping.sh &
-    echo $! > ping.pid
-    npm i -g opencv4nodejs
-    kill `cat ping.pid`
+  - npm list -g opencv4nodejs --depth=0 || npm i -g opencv4nodejs
   - npm install --no-save mjpeg-consumer
 script:
-  - npm run test
-  - npm run e2e-test
+  # - npm run test
+  # - npm run e2e-test
+  - npm ls -g opencv4nodejs -j
+  - ls -la "C:\ProgramData\nvs\node\10.15.2\x64\node_modules\opencv4nodejs"
+  - _FORCE_LOGS=1 npm run e2e-test
 after_success:
   - npm run coverage
