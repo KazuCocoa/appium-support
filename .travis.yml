@@ -2,6 +2,12 @@ language: node_js
 node_js:
   - "8"
   - "10"
+os:
+  - linux
+  - windows
+cache:
+  directories:
+    - "$(npm root -g)"
 addons:
   apt:
     sources:
@@ -14,12 +20,7 @@ env:
     - CC=clang-5.0
 install:
   - npm install
-  - |
-    printf "while [ true ]; do\nsleep 30\necho 'Building OpenCV'\ndone" > ping.sh
-    bash ping.sh &
-    echo $! > ping.pid
-    npm i opencv4nodejs > /dev/null 2>&1
-    kill `cat ping.pid`
+  - npm list -g opencv4nodejs --depth=0 || npm i opencv4nodejs
   - npm install --no-save mjpeg-consumer
 script:
   - npm run test
